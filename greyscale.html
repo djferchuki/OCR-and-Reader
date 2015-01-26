@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+	<head>
+		<title>greyscale proof</title>
+		<meta charset="utf8">
+		
+	</head>
+	
+	<body onload=grayscale()>
+		
+
+			 <img id="imagen" src="image.png" alt="Smiley face" height="42" width="42"> 
+ 			<canvas id="canvas" width="1000" height="1000"></canvas>
+
+		
+
+		<script>
+			function grayscale(){ //Creates a canvas element with a grayscale version of the color image
+			    //create canvas
+			    var canvas = document.getElementById("canvas");
+			    //get its context
+			    var ctx = canvas.getContext('2d');
+			    //create empty image
+			    var imgObj = document.getElementById("imagen");
+			   
+			    //draw image on canvas, full canvas API is described here http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html
+			    ctx.drawImage(imgObj, 0, 0);
+			    //get array of image pixels
+			    var imgPixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+			    //run through all the pixels
+			    for(var y = 0; y < imgPixels.height; y++){
+			    	for(var x = 0; x < imgPixels.width; x++){
+			            //here is x and y are multiplied by 4 because every pixel is four bytes: red, green, blue, alpha
+			            var i = (y * 4) * imgPixels.width + x * 4; //Why is this multiplied by 4?
+			            //compute average value for colors, this will convert it to bw
+			            var avg = (imgPixels.data[i] + imgPixels.data[i + 1] + imgPixels.data[i + 2]) / 3;
+			            //set values to array
+			            imgPixels.data[i] = avg; 
+			            imgPixels.data[i + 1] = avg; 
+			            imgPixels.data[i + 2] = avg;
+			        }
+			    }
+			     var data = imgPixels.data;
+
+			        for(var i = 0; i < data.length; i += 4) {
+			          // red
+			          data[i] = 255 - data[i];
+			          // green
+			          data[i + 1] = 255 - data[i + 1];
+			          // blue
+			          data[i + 2] = 255 - data[i + 2];
+			        }
+
+			    //draw pixels according to computed colors
+			    ctx.putImageData(imgPixels, 0, 0, 0, 0, imgPixels.width, imgPixels.height); 
+			    return canvas.toDataURL();
+			}
+
+			
+
+			</script>
+
+		
+	</body>
+</html>
